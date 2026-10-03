@@ -203,10 +203,16 @@ test.describe(zapTargetAppRoute + " regression test suite", function() {
                 });
             },
             function spiderAsUserForRoot(spiderAsUserForDone) {
-                zaproxy.spider.scanAsUser(zapTargetApp, contextId, userId, maxChildren, zapApiKey, function(err, resp) {
-                    spiderAsUserForDone(state.error);
-                });
-            },
+                try {                
+                                zaproxy.spider.scanAsUser(zapTargetApp, contextId, userId, maxChildren, zapApiKey, function(err, resp) {
+                                    spiderAsUserForDone(state.error);
+                                });
+                            
+                } catch (error) {
+                  console.error("Error occurred in operation:", error);
+                  throw error;
+                }
+},
             function activeScan(activeScanDone) {
                 zaproxy.ascan.scan(
                     zapTargetAppAndRoute,
