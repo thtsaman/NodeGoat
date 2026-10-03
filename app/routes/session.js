@@ -136,55 +136,61 @@ function SessionHandler(db) {
     };
 
     const validateSignup = (userName, firstName, lastName, password, verify, email, errors) => {
-
-        const USER_RE = /^.{1,20}$/;
-        const FNAME_RE = /^.{1,100}$/;
-        const LNAME_RE = /^.{1,100}$/;
-        const EMAIL_RE = /^[\S]+@[\S]+\.[\S]+$/;
-        const PASS_RE = /^.{1,20}$/;
-        /*
-        //Fix for A2-2 - Broken Authentication -  requires stronger password
-        //(at least 8 characters with numbers and both lowercase and uppercase letters.)
-        const PASS_RE =/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-        */
-
-        errors.userNameError = "";
-        errors.firstNameError = "";
-        errors.lastNameError = "";
-
-        errors.passwordError = "";
-        errors.verifyError = "";
-        errors.emailError = "";
-
-        if (!USER_RE.test(userName)) {
-            errors.userNameError = "Invalid user name.";
-            return false;
+        try {        
+        
+                const USER_RE = /^.{1,20}$/;
+                const FNAME_RE = /^.{1,100}$/;
+                const LNAME_RE = /^.{1,100}$/;
+                const EMAIL_RE = /^[\S]+@[\S]+\.[\S]+$/;
+                const PASS_RE = /^.{1,20}$/;
+                /*
+                //Fix for A2-2 - Broken Authentication -  requires stronger password
+                //(at least 8 characters with numbers and both lowercase and uppercase letters.)
+                const PASS_RE =/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+                */
+        
+                errors.userNameError = "";
+                errors.firstNameError = "";
+                errors.lastNameError = "";
+        
+                errors.passwordError = "";
+                errors.verifyError = "";
+                errors.emailError = "";
+        
+                if (!USER_RE.test(userName)) {
+                    errors.userNameError = "Invalid user name.";
+                    return false;
+                }
+                if (!FNAME_RE.test(firstName)) {
+                    errors.firstNameError = "Invalid first name.";
+                    return false;
+                }
+                if (!LNAME_RE.test(lastName)) {
+                    errors.lastNameError = "Invalid last name.";
+                    return false;
+                }
+                if (!PASS_RE.test(password)) {
+                    errors.passwordError = "Password must be 8 to 18 characters" +
+                        " including numbers, lowercase and uppercase letters.";
+                    return false;
+                }
+                if (password !== verify) {
+                    errors.verifyError = "Password must match";
+                    return false;
+                }
+                if (email !== "") {
+                    if (!EMAIL_RE.test(email)) {
+                        errors.emailError = "Invalid email address";
+                        return false;
+                    }
+                }
+                return true;
+            
+        } catch (error) {
+          console.error("Error occurred in operation:", error);
+          throw error;
         }
-        if (!FNAME_RE.test(firstName)) {
-            errors.firstNameError = "Invalid first name.";
-            return false;
-        }
-        if (!LNAME_RE.test(lastName)) {
-            errors.lastNameError = "Invalid last name.";
-            return false;
-        }
-        if (!PASS_RE.test(password)) {
-            errors.passwordError = "Password must be 8 to 18 characters" +
-                " including numbers, lowercase and uppercase letters.";
-            return false;
-        }
-        if (password !== verify) {
-            errors.verifyError = "Password must match";
-            return false;
-        }
-        if (email !== "") {
-            if (!EMAIL_RE.test(email)) {
-                errors.emailError = "Invalid email address";
-                return false;
-            }
-        }
-        return true;
-    };
+};
 
     this.handleSignup = (req, res, next) => {
 
